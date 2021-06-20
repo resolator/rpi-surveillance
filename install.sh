@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 HELP_MESSAGE=$(cat <<-END
-usage: install.sh [--help] TOKEN CHAT_ID
+usage: install.sh [--help] TOKEN CHANNEL_ID
 
 positional arguments:
   TOKEN    Telegram token of your bot.
-  CHAT_ID  Chat/channel ID where your bot is added and can send messages.
+  CHANNEL_ID  Channel ID where your bot is added and can send messages.
 
 optional arguments:
   --help            Show this help message and exit.
@@ -22,9 +22,9 @@ elif [ "${TOKEN}" == "--help" ]; then
     exit 0
 fi
 
-CHAT_ID=$2
-if [ "${CHAT_ID}" == "" ]; then
-    echo "[ERROR] Please enter the Telegram chat where your bot is."
+CHANNEL_ID=$2
+if [ "${CHANNEL_ID}" == "" ]; then
+    echo "[ERROR] Please enter the Telegram channel where your bot is."
     exit 2
 fi
 
@@ -52,7 +52,7 @@ deactivate
 # create default config file
 touch "${CONFIG_FILE}"
 echo "token=${TOKEN}" >> "${CONFIG_FILE}"
-echo "chat-id=${CHAT_ID}" >> "${CONFIG_FILE}"
+echo "channel-id=${CHANNEL_ID}" >> "${CONFIG_FILE}"
 echo "temp-dir=/tmp/rpi-surveillance" >> "${CONFIG_FILE}"
 echo "resolution=640x480" >> "${CONFIG_FILE}"
 echo "fps=25" >> "${CONFIG_FILE}"

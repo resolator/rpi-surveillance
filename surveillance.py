@@ -22,12 +22,12 @@ def get_args():
                         help='Path to config file.')
     parser.add_argument('--token', required=True,
                         help='Token for your telegram bot.')
-    parser.add_argument('--chat-id', required=True,
-                        help='Telegram chat ID.')
+    parser.add_argument('--channel-id', required=True,
+                        help='Telegram channel ID.')
     parser.add_argument('--temp-dir', type=Path,
                         default=Path('/tmp/rpi-surveillance'),
                         help='Path to temporary directory for video saving '
-                             'before sending to chat.')
+                             'before sending to channel.')
     parser.add_argument('--resolution', default='640x480',
                         choices=['640x480', '1280x720', '1920x1080'],
                         help='Camera resolution.')
@@ -65,15 +65,15 @@ class DetectMotion(PiMotionAnalysis):
             self.motion = True
 
 
-def send_record(bot, chat_id, h264_path, fps):
+def send_record(bot, channel_id, h264_path, fps):
     """Convert a record to from h264 to mp4 and send it to a telegram channel.
 
     Parameters
     ----------
     bot : telegram.ext.Updater.bot
         Telegram bot instance.
-    chat_id : str
-        Telegram chat id of your channel.
+    channel_id : str
+        Telegram channel_id of your channel.
     h264_path : pathlib.Path
         Path to h264 record.
     fps : int
@@ -86,7 +86,7 @@ def send_record(bot, chat_id, h264_path, fps):
     os.system(cmd)
 
     # send to telegram channel
-    bot.send_video(chat_id=chat_id,
+    bot.send_video(chat_id=channel_id,
                    video=open(mp4_path, 'rb'),
                    supports_streaming=True)
 
@@ -155,7 +155,7 @@ def main():
             logger.warning('Motion detected, sending a record')
             threading.Thread(
                 target=send_record,
-                args=[updater.bot, args.chat_id, h264_path, args.fps]
+                args=[updater.bot, args.channel_id, h264_path, args.fps]
             ).start()
         else:
             os.remove(h264_path)

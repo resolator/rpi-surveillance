@@ -21,14 +21,14 @@ elif [ "${TOKEN}" == "--help" ]; then
     exit 0
 fi
 
-# extract chat/channel ID
-CHAT_ID=$(curl -s "https://api.telegram.org/bot${TOKEN}/getUpdates" | grep -oPm 1 "\"sender_chat\":{\"id\":\K[^<]+?(?=,)")
-if [ "${CHAT_ID}" == "" ]; then
-    echo -e "\n[WARNING] Could not parse chat ID. Please, check that:"
-    echo "- you send a message \"test\" to the chat with bot"
-    echo "- bot has access to messages in this chat"
+# extract channel ID
+CHANNEL_ID=$(curl -s "https://api.telegram.org/bot${TOKEN}/getUpdates" | grep -oPm 1 "\"sender_chat\":{\"id\":\K[^<]+?(?=,)")
+if [ "${CHANNEL_ID}" == "" ]; then
+    echo -e "\n[WARNING] Could not parse channel ID. Please, check that:"
+    echo "- you send a message \"test\" to the channel with bot"
+    echo "- bot has access to messages in this channel"
     echo "- bot TOKEN is correct"
     exit 2
 else
-    echo -e "\nChat/channel ID: ${CHAT_ID}"
+    echo -e "\nCHANNEL_ID: ${CHANNEL_ID}"
 fi
