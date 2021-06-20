@@ -1,0 +1,4 @@
+ConfigArgParse==1.4.1
+picamera==1.13
+python-telegram-bot==13.5
+numpy==1.16.2
