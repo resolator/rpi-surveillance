@@ -39,7 +39,7 @@ fi
 
 # install requirements
 sudo apt update
-sudo apt install python3-pip python3-venv libatlas-base-dev
+sudo apt install python3-pip python3-venv libatlas-base-dev gpac
 
 # create and setup venv
 VENV_DIR="${REPO_DIR}/.venv"
