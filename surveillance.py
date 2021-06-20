@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*
 import os
 import logging
-import argparse
 import threading
+import configargparse
 
 import numpy as np
 
@@ -17,7 +17,9 @@ from logging.handlers import RotatingFileHandler
 
 def get_args():
     """Arguments parser and checker."""
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = configargparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--config', is_config_file=True,
+                        help='Path to config file.')
     parser.add_argument('--token', required=True,
                         help='Token for your telegram bot.')
     parser.add_argument('--chat-id', required=True,
@@ -29,7 +31,7 @@ def get_args():
     parser.add_argument('--resolution', default='640x480',
                         choices=['640x480', '1280x720', '1920x1080'],
                         help='Camera resolution.')
-    parser.add_argument('--fps', type=int, default=30, choices=[30, 60],
+    parser.add_argument('--fps', type=int, default=30, choices=[25, 30, 60],
                         help='Frames per second.')
     parser.add_argument('--rotation', type=int, default=0,
                         choices=[0, 90, 180, 270],
@@ -38,8 +40,6 @@ def get_args():
                         help='Duration of videos in seconds.')
     parser.add_argument('--log-file',
                         help='Path to log file for logging.')
-    parser.add_argument('--save-to', type=Path,
-                        help='Path to save dir.')
 
     # check args
     args = parser.parse_args()
@@ -124,8 +124,8 @@ def main():
 
     # setup move detection
     detection_data = {'640x480': (10, 20),
-                      '1280x720': (15, 40),
-                      '1920x1080': (20, 60)}
+                      '1280x720': (20, 50),
+                      '1920x1080': (40, 80)}
     vectors_quorum, magnitude_th = detection_data[args.resolution]
     output = DetectMotion(camera, vectors_quorum, magnitude_th)
 
