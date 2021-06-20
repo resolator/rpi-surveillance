@@ -21,7 +21,17 @@ You will get the TOKEN. Save it for future use.
 
 ### Install package
 
-Run `install.sh` and it will install all required packages (sudo required).
+Run `install.sh` and it will install all required packages (sudo required):
+```shell
+usage: install.sh [--help] TOKEN CHANNEL_ID
+
+positional arguments:
+  TOKEN    Telegram token of your bot.
+  CHANNEL_ID  Channel ID where your bot is added and can send messages.
+
+optional arguments:
+  --help            Show this help message and exit.
+```
 
 Note: the installation supposes that you already enabled camera module on your Raspberry Pi.
 
