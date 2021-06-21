@@ -4,6 +4,8 @@ Make a surveillance camera from your Raspberry Pi 4!
 The surveillance is built as following: the camera records 10 seconds video 
 and if a motion was detected - sends the video to telegram channel.
 
+Tested on Raspberry Pi 4 (4 RAM) + NoIR Camera V2.
+
 ## Installation
 
 ### Create telegram bot and chat
