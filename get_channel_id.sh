@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 HELP_MESSAGE=$(cat <<-END
-usage: install.sh [--help] TOKEN
+usage: get_channel_id.sh [--help] TOKEN
 
 positional arguments:
   TOKEN    Telegram token of your bot.
