@@ -1,6 +1,11 @@
 # rpi-surveillance
 Make a surveillance camera from your Raspberry Pi 4!
 
+The surveillance is built as following: the camera records 10 seconds video 
+and if a motion was detected - sends the video to telegram channel.
+
+Tested on Raspberry Pi 4 (4 RAM) + NoIR Camera V2.
+
 ## Installation
 
 ### Create telegram bot and chat
@@ -21,7 +26,17 @@ You will get the TOKEN. Save it for future use.
 
 ### Install package
 
-Run `install.sh` and it will install all required packages (sudo required).
+Run `install.sh` and it will install all required packages (sudo required):
+```shell
+usage: install.sh [--help] TOKEN CHANNEL_ID
+
+positional arguments:
+  TOKEN    Telegram token of your bot.
+  CHANNEL_ID  Channel ID where your bot is added and can send messages.
+
+optional arguments:
+  --help            Show this help message and exit.
+```
 
 Note: the installation supposes that you already enabled camera module on your Raspberry Pi.
 
