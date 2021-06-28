@@ -1,0 +1,16 @@
+rpi-surveillance (2.0.0) bionic; urgency=low
+
+  * Changed distribution way (developed debian package).
+  * Moved tmpfs creation to the installation stage.
+  * Added temporary directory cleanup when starting the work.
+
+ -- Vladyslav Dusiak <v.dusiak@gmail.com>  Mon, 29 Jun 2021 00:00:00 +0000
+
+
+rpi-surveillance (1.0.0) bionic; urgency=low
+
+  * rpi-surveillance: Initial release.
+
+ -- Vladyslav Dusiak <v.dusiak@gmail.com>  Mon, 21 Jun 2021 00:00:00 +0000
+
+

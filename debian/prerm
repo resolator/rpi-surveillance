@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# unmount tmp dir
+TMP_DIR="/usr/lib/rpi-surveillance/ram-dir"
+umount "${TMP_DIR}"
+
+# clean fstab
+FSTAB_PATH="/etc/fstab"
+sed -i '/# rpi-surveillance part (DO NOT EDIT)/{:start /# end of rpi-surveillance part/!{N;b start};/# rpi-surveillance part (DO NOT EDIT)\ntmpfs.*\n# end of rpi-surveillance part/d}' "${FSTAB_PATH}"

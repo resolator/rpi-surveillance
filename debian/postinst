@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# check that the record already exists in fstab
+FSTAB_PATH="/etc/fstab"
+MATCH=$(sed -n '/# rpi-surveillance part (DO NOT EDIT)/{:start /# end of rpi-surveillance part/!{N;b start};/# rpi-surveillance part (DO NOT EDIT)\ntmpfs.*\n# end of rpi-surveillance part/p}' "${FSTAB_PATH}")
+
+if [ ! -z "${MATCH}" ]; then
+    # record already exists
+    exit 0
+fi
+
+# check the last char in /etc/fstab
+NEW_LINE="\n"
+LAST_FSTAB_CHAR=$(tail -c 1 ${FSTAB_PATH})
+CHAR_HEX=$(printf %x "'${LAST_FSTAB_CHAR}")
+if [ "${CHAR_HEX}" == $'\n' ] || [ "${CHAR_HEX}" == 0 ]; then
+    NEW_LINE=""
+fi
+
+# create insertion for /etc/fstab
+TMP_DIR="/usr/lib/rpi-surveillance/ram-dir"
+FSTAB_INSERTION="${NEW_LINE}# rpi-surveillance part (DO NOT EDIT)
+tmpfs ${TMP_DIR} tmpfs  defaults,noatime,nosuid,nodev,noexec,mode=0755,size=128M 0 0
+# end of rpi-surveillance part"
+
+# insert
+echo -e "${FSTAB_INSERTION}" >> "${FSTAB_PATH}"
+
+# mount new point
+mount "${TMP_DIR}"
+
+# change rights for temporary directory
+chmod o+w "${TMP_DIR}"

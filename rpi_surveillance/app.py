@@ -23,20 +23,24 @@ def get_args():
     parser.add_argument('--token', required=True,
                         help='Token for your telegram bot.')
     parser.add_argument('--channel-id', required=True,
-                        help='Telegram channel ID.')
+                        help='Telegram channel ID. If you don\'t have it '
+                             'please, send a message to your channel and '
+                             'run /usr/lib/rpi-surveillance/get_channel_id '
+                             'with your token.')
     parser.add_argument('--temp-dir', type=Path,
-                        default=Path('/tmp/rpi-surveillance'),
+                        default=Path('/usr/lib/rpi-surveillance/ram-dir'),
                         help='Path to temporary directory for video saving '
-                             'before sending to channel.')
+                             'before sending to channel. Don\'t change it if '
+                             'you don\'t know what you\'re doing.')
     parser.add_argument('--resolution', default='640x480',
                         choices=['640x480', '1280x720', '1920x1080'],
                         help='Camera resolution.')
-    parser.add_argument('--fps', type=int, default=30, choices=[25, 30, 60],
+    parser.add_argument('--fps', type=int, default=25, choices=[25, 30, 60],
                         help='Frames per second.')
     parser.add_argument('--rotation', type=int, default=0,
                         choices=[0, 90, 180, 270],
                         help='Frame rotation.')
-    parser.add_argument('--duration', type=int, default=5,
+    parser.add_argument('--duration', type=int, default=10,
                         help='Duration of videos in seconds.')
     parser.add_argument('--log-file',
                         help='Path to log file for logging.')
@@ -99,6 +103,9 @@ def main():
     """Application entry point."""
     args = get_args()
 
+    # clean temp dir
+    [os.remove(x) for x in args.temp_dir.glob('*.*')]
+
     # setup logging
     date_format = '%Y-%m-%d_%H-%M-%S'
     logging.basicConfig(level=logging.INFO,
@@ -154,6 +161,7 @@ def main():
         if output.motion:
             logger.warning('Motion detected, sending a record')
             threading.Thread(
+                daemon=True,
                 target=send_record,
                 args=[updater.bot, args.channel_id, h264_path, args.fps]
             ).start()
