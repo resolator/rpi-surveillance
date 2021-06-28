@@ -8,6 +8,21 @@ Tested on Raspberry Pi 4 (4 RAM) + NoIR Camera V2.
 
 ## Installation
 
+### Install package
+
+Install Python 3 requirements:
+```shell
+pip3 install --user -r requirements.txt
+```
+
+Install provided `.deb` package:
+```shell
+sudo dpkg -i <path/to/downloaded/rpi-surveillance.deb>
+sudo apt install -f
+```
+
+Note: the installation supposes that you already enabled camera module on your Raspberry Pi.
+
 ### Create telegram bot and chat
 
 1. Write to `@BotFather` in telegram and create a bot:
@@ -22,35 +37,37 @@ You will get the TOKEN. Save it for future use.
 2. Create a private channel where you will receive video sequences with motion.
 3. Add created bot to the channel (rerquires only "post messages" permission).
 4. Send message `test` to the channel.
-5. Run `get_chat_id.sh` to get the CHANNEL_ID. Save it for future use.
-
-### Install package
-
-Run `install.sh` and it will install all required packages (sudo required):
-```shell
-usage: install.sh [--help] TOKEN CHANNEL_ID
-
-positional arguments:
-  TOKEN    Telegram token of your bot.
-  CHANNEL_ID  Channel ID where your bot is added and can send messages.
-
-optional arguments:
-  --help            Show this help message and exit.
-```
-
-Note: the installation supposes that you already enabled camera module on your Raspberry Pi.
+5. Run `/usr/lib/rpi-surveillance/get_channel_id` to get the CHANNEL_ID. 
+   Save it for future use.
 
 
 ## Usage
 
-After installation done the `default.cfg` will be created. You can modify it to
-controll the surveillance settings. The following arguments are available:
+To launch surveillance just run `rpi-surveillance` with your TOKEN and 
+CHANNEL_ID, for example:
+```shell
+rpi-surveillance --token 1259140266:WAaqkMycra87ECzRZwa6Z_8T9KB4N-8OPI --channel-id -1003209177928
 ```
+
+You can set various parameters of the surveillance:
+```
+usage: rpi-surveillance [-h] [--config CONFIG] --token TOKEN --channel-id
+                        CHANNEL_ID [--temp-dir TEMP_DIR]
+                        [--resolution {640x480,1280x720,1920x1080}]
+                        [--fps {25,30,60}] [--rotation {0,90,180,270}]
+                        [--duration DURATION] [--log-file LOG_FILE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config CONFIG       Path to config file.
   --token TOKEN         Token for your telegram bot.
   --channel-id CHANNEL_ID
-                        Telegram channel ID.
+                        Telegram channel ID. If you don't have it please, send
+                        a message to your channel and run /usr/lib/rpi-
+                        surveillance/get_channel_id with your token.
   --temp-dir TEMP_DIR   Path to temporary directory for video saving before
-                        sending to channel.
+                        sending to channel. Don't change it if you don't know
+                        what you're doing.
   --resolution {640x480,1280x720,1920x1080}
                         Camera resolution.
   --fps {25,30,60}      Frames per second.
@@ -60,11 +77,5 @@ controll the surveillance settings. The following arguments are available:
   --log-file LOG_FILE   Path to log file for logging.
 ```
 
-To launch surveillance just run `start.sh`.
-
-Note: `sudo` required here to create a temporary filesystem mapped on the RAM 
-memory  to store a single video before sending it to the channel.
-
-## TODO
-- [ ] create deb package
-- [ ] move `tmpfs` creation to `fstab` on installation stage
+## Build
+Build was done using `dpkg-buildpackage`.
