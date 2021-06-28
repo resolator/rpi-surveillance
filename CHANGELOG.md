@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Unreleased changes will be added to this section first.
 
 
+## [2.0.1] - 2021-06-29
+### Changed
+- Temporary directory mount rights.
+
+[2.0.1]: https://github.com/resolator/rpi-surveillance/compare/v2.0.0...v2.0.1
+
+
 ## [2.0.0] - 2021-06-29
 ### Added
 - Temporary directory cleanup when starting the work.
