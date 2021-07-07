@@ -34,14 +34,14 @@ def get_args():
                              'you don\'t know what you\'re doing.')
     parser.add_argument('--resolution', default='640x480',
                         choices=['640x480', '1280x720', '1920x1080'],
-                        help='Camera resolution.')
+                        help='Camera resolution. Default - 640x480.')
     parser.add_argument('--fps', type=int, default=25, choices=[25, 30, 60],
-                        help='Frames per second.')
+                        help='Frames per second. Default - 25.')
     parser.add_argument('--rotation', type=int, default=0,
                         choices=[0, 90, 180, 270],
-                        help='Frame rotation.')
+                        help='Frame rotation. Default - 0.')
     parser.add_argument('--duration', type=int, default=10,
-                        help='Duration of videos in seconds.')
+                        help='Duration of videos in seconds. Default - 10.')
     parser.add_argument('--magnitude-th', type=int,
                         help='Magnitude threshold for motion detection '
                              '(lower - more sensitive). '
