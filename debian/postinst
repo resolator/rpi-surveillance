@@ -20,7 +20,7 @@ fi
 # create insertion for /etc/fstab
 TMP_DIR="/usr/lib/rpi-surveillance/ram-dir"
 FSTAB_INSERTION="${NEW_LINE}# rpi-surveillance part (DO NOT EDIT)
-tmpfs ${TMP_DIR} tmpfs  defaults,noatime,nosuid,nodev,noexec,mode=0755,size=128M 0 0
+tmpfs ${TMP_DIR} tmpfs  defaults,noatime,nosuid,nodev,noexec,mode=0777,size=128M 0 0
 # end of rpi-surveillance part"
 
 # insert
@@ -28,6 +28,3 @@ echo -e "${FSTAB_INSERTION}" >> "${FSTAB_PATH}"
 
 # mount new point
 mount "${TMP_DIR}"
-
-# change rights for temporary directory
-chmod o+w "${TMP_DIR}"

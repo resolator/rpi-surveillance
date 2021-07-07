@@ -1,3 +1,10 @@
+rpi-surveillance (2.0.1) bionic; urgency=low
+
+  * Temporary directory mount rights.
+
+ -- Vladyslav Dusiak <v.dusiak@gmail.com>  Mon, 29 Jun 2021 00:00:00 +0000
+
+
 rpi-surveillance (2.0.0) bionic; urgency=low
 
   * Changed distribution way (developed debian package).
