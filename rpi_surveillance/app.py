@@ -42,12 +42,32 @@ def get_args():
                         help='Frame rotation.')
     parser.add_argument('--duration', type=int, default=10,
                         help='Duration of videos in seconds.')
+    parser.add_argument('--magnitude-th', type=int,
+                        help='Magnitude threshold for motion detection '
+                             '(lower - more sensitive). '
+                             'Defaults: for 640x480 - 15,'
+                             '          for 1280x720 - 40,'
+                             '          for 1920x1080 - 65.')
+    parser.add_argument('--vectors-quorum', type=int,
+                        help='Vectors quorum for motion detection '
+                             '(lower - more sensitive). '
+                             'Defaults: for 640x480 - 10,'
+                             '          for 1280x720 - 20,'
+                             '          for 1920x1080 - 40.')
     parser.add_argument('--log-file',
                         help='Path to log file for logging.')
 
     # check args
     args = parser.parse_args()
     assert args.duration > 2, 'duration is too low.'
+
+    if args.magnitude_th is None:
+        default_magnitudes = {'640x480': 15, '1280x720': 40, '1920x1080': 65}
+        args.magnitude_th = default_magnitudes[args.resolution]
+
+    if args.vectors_quorum is None:
+        default_vectors = {'640x480': 10, '1280x720': 20, '1920x1080': 40}
+        args.vectors_quorum = default_vectors[args.resolution]
 
     return args
 
@@ -130,11 +150,7 @@ def main():
     camera.annotate_background = PiColor('black')
 
     # setup move detection
-    detection_data = {'640x480': (10, 20),
-                      '1280x720': (20, 50),
-                      '1920x1080': (40, 80)}
-    vectors_quorum, magnitude_th = detection_data[args.resolution]
-    output = DetectMotion(camera, vectors_quorum, magnitude_th)
+    output = DetectMotion(camera, args.vectors_quorum, args.magnitude_th)
 
     logger.info('Initialization completed')
     logger.info('Start recording')
