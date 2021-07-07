@@ -141,7 +141,6 @@ def main():
 
     # connect to telegram bot
     updater = Updater(token=args.token)
-    updater.start_polling()
 
     # setup camera
     camera = PiCamera(resolution=args.resolution, framerate=args.fps)
