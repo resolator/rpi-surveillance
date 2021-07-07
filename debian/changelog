@@ -1,3 +1,11 @@
+rpi-surveillance (2.1.0) bionic; urgency=low
+
+  * Added motion detection argumets.
+  * Removed unused telegram pooling.
+
+ -- Vladyslav Dusiak <v.dusiak@gmail.com>  Mon, 07 Jul 2021 00:00:00 +0000
+
+
 rpi-surveillance (2.0.1) bionic; urgency=low
 
   * Temporary directory mount rights.
