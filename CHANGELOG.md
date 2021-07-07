@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Unreleased changes will be added to this section first.
 
 
+## [2.2.0] - 2021-07-07
+### Added
+- Additional argument `--detection-frames` for motion detection.
+
+### Changed
+- Motion detection improved for cases with camera noise.
+
+[2.2.0]: https://github.com/resolator/rpi-surveillance/compare/v2.1.0...v2.2.0
+
+
 ## [2.1.0] - 2021-07-07
 ### Added
 - Motion detection argumets.

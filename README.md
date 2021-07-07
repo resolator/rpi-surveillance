@@ -4,6 +4,16 @@ Make a surveillance camera from your Raspberry Pi 4!
 The surveillance is built as following: the camera records 10 seconds video 
 and if a motion was detected - sends the video to telegram channel.
 
+The timestamp is printed on videos, so it is better to set the correct time on 
+your Raspberry Pi.
+
+The motion detection works in the following way: the camera’s H.264 encoder 
+calculates motion vector estimates while generating compressed video. Using 
+these vectors we threshold them by `--magnitude-th` argument. If more than 
+`--vectors-quorum` vectors thresholded - mark current frame as containing 
+motion. If there are more than `--detection-frames` consecutive frames with 
+motion - motion detected.
+
 Tested on Raspberry Pi 4 (4 RAM) + NoIR Camera V2.
 
 ## Installation
@@ -52,12 +62,12 @@ rpi-surveillance --token 1259140266:WAaqkMycra87ECzRZwa6Z_8T9KB4N-8OPI --channel
 You can set various parameters of the surveillance:
 ```
 usage: rpi-surveillance [-h] [--config CONFIG] --token TOKEN --channel-id
-                        CHANNEL_ID [--temp-dir TEMP_DIR]
+                        CHANNEL_ID [--temp-dir TEMP_DIR] [--log-file LOG_FILE]
                         [--resolution {640x480,1280x720,1920x1080}]
                         [--fps {25,30,60}] [--rotation {0,90,180,270}]
                         [--duration DURATION] [--magnitude-th MAGNITUDE_TH]
                         [--vectors-quorum VECTORS_QUORUM]
-                        [--log-file LOG_FILE]
+                        [--detection-frames DETECTION_FRAMES]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -70,6 +80,7 @@ optional arguments:
   --temp-dir TEMP_DIR   Path to temporary directory for video saving before
                         sending to channel. Don't change it if you don't know
                         what you're doing.
+  --log-file LOG_FILE   Path to log file for logging.
   --resolution {640x480,1280x720,1920x1080}
                         Camera resolution. Default - 640x480.
   --fps {25,30,60}      Frames per second. Default - 25.
@@ -84,7 +95,9 @@ optional arguments:
                         Vectors quorum for motion detection (lower - more
                         sensitive). Defaults: for 640x480 - 10, for 1280x720 -
                         20, for 1920x1080 - 40.
-  --log-file LOG_FILE   Path to log file for logging.
+  --detection-frames DETECTION_FRAMES
+                        The number of consecutive frames with detected motion
+                        to send an alert.
 ```
 
 ## Build
