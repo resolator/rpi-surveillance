@@ -20,6 +20,8 @@ def get_args():
     parser = configargparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', is_config_file=True,
                         help='Path to config file.')
+
+    # telergam arguments
     parser.add_argument('--token', required=True,
                         help='Token for your telegram bot.')
     parser.add_argument('--channel-id', required=True,
@@ -27,11 +29,17 @@ def get_args():
                              'please, send a message to your channel and '
                              'run /usr/lib/rpi-surveillance/get_channel_id '
                              'with your token.')
+
+    # other arguments
     parser.add_argument('--temp-dir', type=Path,
                         default=Path('/usr/lib/rpi-surveillance/ram-dir'),
                         help='Path to temporary directory for video saving '
                              'before sending to channel. Don\'t change it if '
                              'you don\'t know what you\'re doing.')
+    parser.add_argument('--log-file',
+                        help='Path to log file for logging.')
+
+    # camera arguments
     parser.add_argument('--resolution', default='640x480',
                         choices=['640x480', '1280x720', '1920x1080'],
                         help='Camera resolution. Default - 640x480.')
@@ -42,6 +50,8 @@ def get_args():
                         help='Frame rotation. Default - 0.')
     parser.add_argument('--duration', type=int, default=10,
                         help='Duration of videos in seconds. Default - 10.')
+
+    # detection arguments
     parser.add_argument('--magnitude-th', type=int,
                         help='Magnitude threshold for motion detection '
                              '(lower - more sensitive). '
@@ -54,8 +64,9 @@ def get_args():
                              'Defaults: for 640x480 - 10,'
                              '          for 1280x720 - 20,'
                              '          for 1920x1080 - 40.')
-    parser.add_argument('--log-file',
-                        help='Path to log file for logging.')
+    parser.add_argument('--detection-frames', type=int, default=4,
+                        help='The number of consecutive frames with detected '
+                             'motion to send an alert.')
 
     # check args
     args = parser.parse_args()
@@ -73,11 +84,17 @@ def get_args():
 
 
 class DetectMotion(PiMotionAnalysis):
-    def __init__(self, camera, vectors_quorum=10, magnitude_th=60):
+    def __init__(self,
+                 camera,
+                 vectors_quorum=10,
+                 magnitude_th=60,
+                 motion_frames=4):
         super().__init__(camera)
-        self.magnitude_th = magnitude_th
-        self.vectors_quorum = vectors_quorum
-        self.motion = False
+        self._magnitude_th = magnitude_th
+        self._vectors_quorum = vectors_quorum
+        self._motion_frames = motion_frames
+        self._motions_history = 0
+        self._motion = False
 
     def analyze(self, motions):
         motions = np.sqrt(
@@ -85,8 +102,23 @@ class DetectMotion(PiMotionAnalysis):
             np.square(motions['y'].astype(np.float))
         ).clip(0, 255).astype(np.uint8)
 
-        if (motions > self.magnitude_th).sum() > self.vectors_quorum:
-            self.motion = True
+        # check motion on the current frame
+        if (motions > self._magnitude_th).sum() > self._vectors_quorum:
+            self._motions_history += 1
+        else:
+            self._motions_history = 0
+
+        # check last N frames motion trigger
+        if self._motions_history >= self._motion_frames:
+            self._motion = True
+
+    def reset_detection(self):
+        """Clean detected motion."""
+        self._motion = False
+
+    def detect_motion(self):
+        """Return True if motion was presented."""
+        return self._motion
 
 
 def send_record(bot, channel_id, h264_path, fps):
@@ -149,7 +181,10 @@ def main():
     camera.annotate_background = PiColor('black')
 
     # setup move detection
-    output = DetectMotion(camera, args.vectors_quorum, args.magnitude_th)
+    output = DetectMotion(camera,
+                          args.vectors_quorum,
+                          args.magnitude_th,
+                          args.detection_frames)
 
     logger.info('Initialization completed')
     logger.info('Start recording')
@@ -158,7 +193,7 @@ def main():
         h264_path = args.temp_dir.joinpath(
             start.strftime(date_format) + '.h264')
 
-        output.motion = False
+        output.reset_detection()
         camera.annotate_text = dtm.now().strftime(date_format)
         camera.start_recording(str(h264_path),
                                format='h264',
@@ -173,7 +208,7 @@ def main():
         camera.stop_recording()
 
         # if there was a motion - convert and send video asynchronously
-        if output.motion:
+        if output.detect_motion():
             logger.warning('Motion detected, sending a record')
             threading.Thread(
                 daemon=True,
