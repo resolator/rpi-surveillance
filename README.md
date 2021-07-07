@@ -55,7 +55,9 @@ usage: rpi-surveillance [-h] [--config CONFIG] --token TOKEN --channel-id
                         CHANNEL_ID [--temp-dir TEMP_DIR]
                         [--resolution {640x480,1280x720,1920x1080}]
                         [--fps {25,30,60}] [--rotation {0,90,180,270}]
-                        [--duration DURATION] [--log-file LOG_FILE]
+                        [--duration DURATION] [--magnitude-th MAGNITUDE_TH]
+                        [--vectors-quorum VECTORS_QUORUM]
+                        [--log-file LOG_FILE]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -69,11 +71,19 @@ optional arguments:
                         sending to channel. Don't change it if you don't know
                         what you're doing.
   --resolution {640x480,1280x720,1920x1080}
-                        Camera resolution.
-  --fps {25,30,60}      Frames per second.
+                        Camera resolution. Default - 640x480.
+  --fps {25,30,60}      Frames per second. Default - 25.
   --rotation {0,90,180,270}
-                        Frame rotation.
-  --duration DURATION   Duration of videos in seconds.
+                        Frame rotation. Default - 0.
+  --duration DURATION   Duration of videos in seconds. Default - 10.
+  --magnitude-th MAGNITUDE_TH
+                        Magnitude threshold for motion detection (lower - more
+                        sensitive). Defaults: for 640x480 - 15, for 1280x720 -
+                        40, for 1920x1080 - 65.
+  --vectors-quorum VECTORS_QUORUM
+                        Vectors quorum for motion detection (lower - more
+                        sensitive). Defaults: for 640x480 - 10, for 1280x720 -
+                        20, for 1920x1080 - 40.
   --log-file LOG_FILE   Path to log file for logging.
 ```
 
