@@ -1,3 +1,10 @@
+rpi-surveillance (2.2.1) bionic; urgency=low
+
+  * Added camera release when closing the application.
+
+ -- Vladyslav Dusiak <v.dusiak@gmail.com>  Tue, 07 Dec 2021 10:00:00 +0000
+
+
 rpi-surveillance (2.2.0) bionic; urgency=low
 
   * Motion detection improved for cases with camera noise.
