@@ -188,35 +188,38 @@ def main():
 
     logger.info('Initialization completed')
     logger.info('Start recording')
-    while True:
-        start = dtm.now()
-        h264_path = args.temp_dir.joinpath(
-            start.strftime(date_format) + '.h264')
+    try:
+        while True:
+            start = dtm.now()
+            h264_path = args.temp_dir.joinpath(
+                start.strftime(date_format) + '.h264')
 
-        output.reset_detection()
-        camera.annotate_text = dtm.now().strftime(date_format)
-        camera.start_recording(str(h264_path),
-                               format='h264',
-                               motion_output=output)
-
-        # make a record
-        while (dtm.now() - start).seconds < args.duration:
+            output.reset_detection()
             camera.annotate_text = dtm.now().strftime(date_format)
-            camera.wait_recording(0.2)
+            camera.start_recording(str(h264_path),
+                                format='h264',
+                                motion_output=output)
 
-        # save file
+            # make a record
+            while (dtm.now() - start).seconds < args.duration:
+                camera.annotate_text = dtm.now().strftime(date_format)
+                camera.wait_recording(0.2)
+
+            # save file
+            camera.stop_recording()
+
+            # if there was a motion - convert and send video asynchronously
+            if output.detect_motion():
+                logger.warning('Motion detected, sending a record')
+                threading.Thread(
+                    daemon=True,
+                    target=send_record,
+                    args=[updater.bot, args.channel_id, h264_path, args.fps]
+                ).start()
+            else:
+                os.remove(h264_path)
+    finally:
         camera.stop_recording()
-
-        # if there was a motion - convert and send video asynchronously
-        if output.detect_motion():
-            logger.warning('Motion detected, sending a record')
-            threading.Thread(
-                daemon=True,
-                target=send_record,
-                args=[updater.bot, args.channel_id, h264_path, args.fps]
-            ).start()
-        else:
-            os.remove(h264_path)
 
 
 if __name__ == '__main__':
