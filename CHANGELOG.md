@@ -8,11 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Unreleased changes will be added to this section first.
 
 
+## [2.2.2] - 2021-12-15
+### Added
+- Added a telegram notification when the app has been launched.
+
+[2.2.2]: https://github.com/resolator/rpi-surveillance/compare/v2.2.1...v2.2.2
+
+
 ## [2.2.1] - 2021-12-07
 ### Added
 - Added camera release when closing the application.
 
-[2.2.0]: https://github.com/resolator/rpi-surveillance/compare/v2.2.0...v2.2.1
+[2.2.1]: https://github.com/resolator/rpi-surveillance/compare/v2.2.0...v2.2.1
 
 
 ## [2.2.0] - 2021-07-07

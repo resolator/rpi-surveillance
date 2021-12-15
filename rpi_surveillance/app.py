@@ -185,7 +185,11 @@ def main():
                           args.vectors_quorum,
                           args.magnitude_th,
                           args.detection_frames)
-
+    
+    # send notification
+    updater.bot.send_message(chat_id=args.channel_id,
+                             text='Surveillance has been started.')
+    
     logger.info('Initialization completed')
     logger.info('Start recording')
     try:
